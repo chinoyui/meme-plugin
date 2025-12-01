@@ -1,5 +1,6 @@
 import { Config, Render, Version } from '#components'
 import { Utils } from '#models'
+import chalk from 'chalk'
 
 export class list extends plugin {
     constructor() {
@@ -17,20 +18,34 @@ export class list extends plugin {
         count: 0
     };
 
-    async list(e) {
-        if (!Config.meme.enable) return false;
+    static isRendering = false;
+
+    static async init() {
+        if (!Config.meme.enable) return;
+        try {
+            logger.info(chalk.bold.magenta(`[${Version.Plugin_AliasName}] ⏳ 正在后台预加载表情列表...`));
+            
+            await list.generateCache();
+            
+            if (list.cache.img) {
+                logger.info(chalk.bold.magenta(`[${Version.Plugin_AliasName}] 🎉 表情列表预加载完成，当前收录: ${list.cache.count}`));
+            }
+        } catch (e) {
+            logger.error(`[${Version.Plugin_AliasName}] 表情列表预加载失败`, e);
+        }
+    }
+
+    static async generateCache(providedKeys = null) {
+        if (list.isRendering) return null;
+        list.isRendering = true;
 
         try {
-            const keys = (await Utils.Tools.getAllKeys() || []).sort();
+            const keys = providedKeys || (await Utils.Tools.getAllKeys() || []).sort();
             const currentSignature = JSON.stringify(keys);
-            if (list.cache.keySignature === currentSignature && list.cache.img) {
-                await e.reply(list.cache.img);
-                return true;
-            }
 
-     
-            const oldTotal = list.cache.count;
-            const isColdStart = !list.cache.img;
+            if (list.cache.keySignature === currentSignature && list.cache.img) {
+                return list.cache.img;
+            }
 
             const tasks = keys.map(async (key) => {
                 const [keyWords, params] = await Promise.all([
@@ -54,23 +69,14 @@ export class list extends plugin {
             });
 
             const memeList = (await Promise.all(tasks)).filter(item => item !== null);
-    
             const realTotal = memeList.length;
 
-            if (realTotal === 0) {
-                await e.reply(`[${Version.Plugin_AliasName}]没有找到表情列表, 请使用[#清语表情更新资源], 稍后再试`, true);
-                return true;
-            }
+            if (realTotal === 0) return null;
 
             const img = await Render.render('list/index', {
                 memeList,
                 total: realTotal
             });
-
-            let tipMsg = '';
-            if (!isColdStart && realTotal > oldTotal) {
-                tipMsg = `\n列表更新完成，新增 ${realTotal - oldTotal} 个表情~`;
-            }
 
             list.cache = {
                 keySignature: currentSignature,
@@ -78,12 +84,38 @@ export class list extends plugin {
                 count: realTotal
             };
 
-            await e.reply(img);
-            
-            if (tipMsg) {
-                await e.reply(tipMsg);
+            return img;
+
+        } catch (error) {
+            logger.error('生成表情列表缓存失败:', error);
+            throw error;
+        } finally {
+            list.isRendering = false;
+        }
+    }
+
+    async list(e) {
+        if (!Config.meme.enable) return false;
+
+        try {
+            const keys = (await Utils.Tools.getAllKeys() || []).sort();
+            const currentSignature = JSON.stringify(keys);
+
+            if (list.cache.keySignature === currentSignature && list.cache.img) {
+                await e.reply(list.cache.img);
+                return true;
             }
 
+            if (list.cache.keySignature !== '') {
+                await e.reply(`[${Version.Plugin_AliasName}] 表情已更新请耐心等待...`, true);
+            }
+            const img = await list.generateCache(keys);
+
+            if (!img) {
+                await e.reply(`[${Version.Plugin_AliasName}]没有找到表情列表, 请使用[#表情更新], 稍后再试`, true);
+                return true;
+            }
+            await e.reply(img);
             return true;
 
         } catch (error) {
@@ -93,3 +125,6 @@ export class list extends plugin {
         }
     }
 }
+
+// 插件加载 5 秒后自动触发预加载
+setTimeout(() => list.init(), 5000);
