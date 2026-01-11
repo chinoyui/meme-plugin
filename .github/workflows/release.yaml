@@ -7,8 +7,7 @@ on:
       - main
 
 permissions:
-  contents: write
-  id-token: write
+  contents: write  # 给 GITHUB_TOKEN 赋予读写内容的权限
   pull-requests: write
 
 jobs:
@@ -17,29 +16,16 @@ jobs:
     outputs:
       releases_created: ${{ steps.release-please.outputs.releases_created }}
     steps:
-      - name: 获取token
-        uses: actions/create-github-app-token@v2
-        id: app-token
-        with:
-          app-id: ${{ secrets.APP_ID }}
-          private-key: ${{ secrets.APP_PRIVATE_KEY }}
-
-      - name: 获取用户ID
-        id: get-user-id
-        run: echo "user-id=$(gh api "/users/${{ steps.app-token.outputs.app-slug }}[bot]" --jq .id)" >> "$GITHUB_OUTPUT"
-        env:
-          GH_TOKEN: ${{ steps.app-token.outputs.token }}
-
       - name: 设置用户信息
         run: |
-          git config --global user.name '${{ steps.app-token.outputs.app-slug }}[bot]'
-          git config --global user.email '${{ steps.get-user-id.outputs.user-id }}+${{ steps.app-token.outputs.app-slug }}[bot]@users.noreply.github.com'
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
 
       - name: 运行 release-please-action
         id: release-please
         uses: googleapis/release-please-action@v4
         with:
-          token: ${{ steps.app-token.outputs.token }}
+          token: ${{ secrets.GITHUB_TOKEN }}  # 用内置 token 替代
           config-file: .release-please-config.json
           manifest-file: .release-please-manifest.json
 
@@ -54,24 +40,6 @@ jobs:
           ref: main
           fetch-tags: true
 
-      - name: 获取token
-        uses: actions/create-github-app-token@v2
-        id: app-token
-        with:
-          app-id: ${{ secrets.APP_ID }}
-          private-key: ${{ secrets.APP_PRIVATE_KEY }}
-
-      - name: 获取用户ID
-        id: get-user-id
-        run: echo "user-id=$(gh api "/users/${{ steps.app-token.outputs.app-slug }}[bot]" --jq .id)" >> "$GITHUB_OUTPUT"
-        env:
-          GH_TOKEN: ${{ steps.app-token.outputs.token }}
-
-      - name: 设置用户信息
-        run: |
-          git config --global user.name '${{ steps.app-token.outputs.app-slug }}[bot]'
-          git config --global user.email '${{ steps.get-user-id.outputs.user-id }}+${{ steps.app-token.outputs.app-slug }}[bot]@users.noreply.github.com'
-      
       - name: 构建产物
         run: |
           zip -r build.zip . -x "*.git/*" -x ".github/*"
@@ -86,6 +54,6 @@ jobs:
       - name: 上传产物
         uses: softprops/action-gh-release@v2
         with:
-          token: ${{ steps.app-token.outputs.token }}
+          token: ${{ secrets.GITHUB_TOKEN }}  # 用内置 token 替代
           files: build.zip
           tag_name: ${{ steps.get_tag.outputs.tag }}
