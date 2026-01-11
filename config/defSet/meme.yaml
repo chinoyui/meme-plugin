@@ -21,3 +21,12 @@ quotedImages: true
 
 # 是否开启表情生成错误回复
 errorReply: true 
+
+# 是否开启戳一戳触发随机表情
+pokeEnable: false
+
+# 戳一戳触发随机表情的概率（0-100，%）
+pokeProbability: 50
+
+# 戳一戳冷却时间（秒）
+pokeLimit: 20
