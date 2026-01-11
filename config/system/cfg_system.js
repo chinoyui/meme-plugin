@@ -72,6 +72,24 @@ const cfgSchema = {
         desc: '是否开启错误信息回复',
         type: 'boolean',
         def: true
+      },
+      pokeEnable: {
+        title: '戳一戳触发',
+        desc: '是否开启戳一戳触发随机表情',
+        type: 'boolean',
+        def: true
+      },
+      pokeProbability: {
+        title: '戳一戳触发概率',
+        desc: '戳一戳触发随机表情的概率（0-100，%）',
+        type: 'number',
+        def: 100
+      },
+      pokeLimit: {
+        title: '戳一戳冷却时间',
+        desc: '戳一戳冷却时间（秒）',
+        type: 'number',
+        def: 10
       }
     }
   },
