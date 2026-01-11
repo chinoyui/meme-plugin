@@ -44,5 +44,35 @@ export default [
     label: '错误回复',
     component: 'Switch',
     bottomHelpMessage: '是否开启错误信息回复'
+  },
+  {
+    field: 'meme.pokeEnable',
+    label: '戳一戳开关',
+    component: 'Switch',
+    bottomHelpMessage: '是否开启戳一戳触发随机表情'
+  },
+  {
+    field: 'meme.pokeProbability',
+    label: '戳一戳触发概率',
+    component: 'InputNumber',
+    bottomHelpMessage: '戳一戳触发随机表情的概率（0-100，%）',
+    componentProps: {
+      min: 0,
+      max: 100,
+      precision: 0,
+      step: 1
+    }
+  },
+  {
+    field: 'meme.pokeLimit',
+    label: '戳一戳冷却时间',
+    component: 'InputNumber',
+    bottomHelpMessage: '戳一戳冷却时间（秒）',
+    componentProps: {
+      min: 0,
+      max: 3600, 
+      precision: 0,
+      step: 1
+    }
   }
 ]
