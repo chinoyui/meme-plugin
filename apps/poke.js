@@ -11,49 +11,55 @@ export class pokeRandomMeme extends plugin {
       priority: -Infinity,
       rule: [
         {
-          reg: /.*/,
-          fnc: 'accept'
+          fnc: 'handlePoke'
         }
       ]
     })
   }
 
-  async accept() {
+  async handlePoke() {
     const e = this.e
     
     if (!e.message) {
       e.message = []
     }
-    
-    const isGroup = !!e.group_id
-    const pokeInfo = {
-      operatorId: e.operator_id || e.user_id,
-      targetId: e.target_id || e.user_id,
-      scene: isGroup ? '群聊' : '私聊',
-      sceneId: isGroup ? e.group_id : e.friend_id
-    }
 
-    const pokeConfig = {
-      enable: Config.meme.pokeEnable,          
-      probability: Config.meme.pokeProbability,
-      limit: Config.meme.pokeLimit             
-    }
-
-    if (!Config.meme.enable || !pokeConfig.enable) {
+    if (!Config.meme.enable || !Config.meme.pokeEnable) {
       logger.info('戳一戳表情功能已关闭（主开关/戳一戳开关未开启）')
       return false
     }
 
-    const randomRate = Math.floor(Math.random() * 100) + 1 // 1-100
-    if (randomRate > pokeConfig.probability) {
-      logger.info(`戳一戳触发概率不足（随机值:${randomRate}, 配置值:${pokeConfig.probability}），跳过生成`)
+    const targetId = e.target_id || e.user_id
+    if (targetId !== e.self_id) {
       return false
     }
 
-    const coolDownKey = `${pokeInfo.sceneId || 'private'}-${pokeInfo.operatorId}`
+    const operatorId = e.operator_id || e.user_id
+    if (operatorId === e.self_id) {
+      return false
+    }
+
+    const isGroup = !!e.group_id
+    const pokeInfo = {
+      operatorId: operatorId,
+      targetId: targetId,
+      selfId: e.self_id,
+      isGroup: isGroup,
+      groupId: e.group_id || null
+    }
+
+    logger.info(`戳一戳表情: ${pokeInfo.operatorId}(${operatorId}) ${isGroup ? '群聊' : '私聊'}戳了机器人`)
+
+    const randomRate = Math.floor(Math.random() * 100) + 1
+    if (randomRate > Config.meme.pokeProbability) {
+      logger.info(`戳一戳触发概率不足（随机值:${randomRate}, 配置值:${Config.meme.pokeProbability}），跳过生成`)
+      return false
+    }
+
+    const coolDownKey = `${pokeInfo.groupId || 'private'}-${pokeInfo.operatorId}`
     const lastTriggerTime = pokeCoolDownMap.get(coolDownKey) || 0
     const currentTime = Date.now()
-    const coolDownMs = pokeConfig.limit * 1000
+    const coolDownMs = Config.meme.pokeLimit * 1000
 
     if (currentTime - lastTriggerTime < coolDownMs) {
       const remainTime = ((coolDownMs - (currentTime - lastTriggerTime)) / 1000).toFixed(1)
@@ -132,14 +138,11 @@ export class pokeRandomMeme extends plugin {
           )
 
           if (result) {
-            // 更新冷却时间
             pokeCoolDownMap.set(coolDownKey, currentTime)
             
-            // 获取表情别名
             const keyWords = await Utils.Tools.getKeyWords(memeKey) ?? []
             const alias = Array.isArray(keyWords) ? keyWords.map(word => `[${word}]`).join(' ') : '[无]'
 
-            // 构造回复消息
             const replyMessage = [
               '随机表情哦~:\n',
               `这是指令哦~: ${alias}\n`,
