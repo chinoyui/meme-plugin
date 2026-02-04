@@ -1,5 +1,67 @@
 # 变更日志
 
+## [1.18.0](https://github.com/chinoyui/meme-plugin/compare/v1.17.0...v1.18.0) (2026-01-12)
+
+
+### ✨ 新功能
+
+* **config:** 添加表情保护设置功能 ([eda6546](https://github.com/chinoyui/meme-plugin/commit/eda654662825c5a649ddf862451efb412b2662c4))
+* **models:** 添加表情保护功能 ([25fa86e](https://github.com/chinoyui/meme-plugin/commit/25fa86ed64c02b8fad6747364a8d4de462ec4600))
+
+
+### 🐛 错误修复
+
+* **apps:** 修复优化统计模块数据处理逻辑 ([b9fe4a6](https://github.com/chinoyui/meme-plugin/commit/b9fe4a60816c9d81644b34527776ad6b8a56d95e))
+* **config:** 修复指令无法添加黑名单表情列表 ([12d5c95](https://github.com/chinoyui/meme-plugin/commit/12d5c95ab5f8e339d29903494c1d986ae2cdec5e))
+* **models:** 优化 getBaseUrl 方法并增加异常处理 ([4c86cd7](https://github.com/chinoyui/meme-plugin/commit/4c86cd7e92f9d805333312c3aafc067be43c4dbd))
+* **models:** 修复生成昵称和性别时的用户 ID 引用错误 ([804d6d1](https://github.com/chinoyui/meme-plugin/commit/804d6d11d97f53f540efb4c9216522b7d5d03be5))
+
+
+### ⚡️ 性能优化
+
+* **help:** 优化版本信息展示 ([3572527](https://github.com/chinoyui/meme-plugin/commit/357252709b0d8117528ea3cdc2a99c8b013f8a83))
+* 重构静态站并使用新的静态站资源 ([411371b](https://github.com/chinoyui/meme-plugin/commit/411371b76ad8d00cab761c1ffe85ae2ef85ecc94))
+
+
+### 🎨 代码样式
+
+* **common:** 更新 YS 字体资源链接 ([6337e2f](https://github.com/chinoyui/meme-plugin/commit/6337e2f2f18c269e8dcf129f92681079b0e389c7))
+
+
+### 🔧 其他更新
+
+* **main:** release 1.16.1 ([639af71](https://github.com/chinoyui/meme-plugin/commit/639af710e3878e1de3573ffb25645005fff96781))
+* **main:** release 1.16.1 ([#57](https://github.com/chinoyui/meme-plugin/issues/57)) ([f85d3ff](https://github.com/chinoyui/meme-plugin/commit/f85d3ffddc8cffd0871de09398a43dbf6ba3bc84))
+* **main:** release 1.17.0 ([1b43fad](https://github.com/chinoyui/meme-plugin/commit/1b43fad0dc8bad0cbfd253966115703dbccd4461))
+* **main:** release 1.17.0 ([#62](https://github.com/chinoyui/meme-plugin/issues/62)) ([08a6847](https://github.com/chinoyui/meme-plugin/commit/08a6847d6ec83779d2282f94f8b660558e169189))
+
+
+### ♻️ 代码重构
+
+* **admin:** 优化表情设置命令的关键词排序 ([6142851](https://github.com/chinoyui/meme-plugin/commit/6142851561865fc9a9290aaa25e48b6f09e93bfc))
+* **apps:** 优化 stat.js 文件 ([b8c23b5](https://github.com/chinoyui/meme-plugin/commit/b8c23b56d1262e007b0c3c2b052f0295c5ed681e))
+* **apps:** 重构表情列表和统计页面 ([73ac96f](https://github.com/chinoyui/meme-plugin/commit/73ac96f17ef10cd1b2f3f66225370901e7c4faa0))
+* **db:** 优化数据库操作逻辑 ([ee27e15](https://github.com/chinoyui/meme-plugin/commit/ee27e15f37b039b4278e845825eca34bd4d16634))
+* **eslint:** 更新 ESLint 配置文件 ([089c20a](https://github.com/chinoyui/meme-plugin/commit/089c20abc62b38ee824ff28262fc797fab5892fe))
+* **models:** 优化 add 函数并移除冗余代码 ([bec299c](https://github.com/chinoyui/meme-plugin/commit/bec299c2000255e9aef608153df8bee46e6a0f67))
+* **models:** 优化 Meme 模型中处理图片的逻辑 ([e58e85b](https://github.com/chinoyui/meme-plugin/commit/e58e85b7b04319544e9f236303cf2963d29c7712))
+* **models:** 移除 GIF 相关功能 ([c96ae46](https://github.com/chinoyui/meme-plugin/commit/c96ae468969df148bd3d5514c759e0f126ed0504))
+* **models:** 移除表情包快捷方式相关代码 ([20f8f20](https://github.com/chinoyui/meme-plugin/commit/20f8f20f332e31270c7f2c13757833e61cd997ea))
+* **update:** 移除更新检查相关代码 ([db62463](https://github.com/chinoyui/meme-plugin/commit/db62463e7f7b74ebfbd59d7814e5689550d0adef))
+* **update:** 移除更新检查相关功能 ([d299e19](https://github.com/chinoyui/meme-plugin/commit/d299e1927a6874e1a66d82dde79e551a7f722d2c))
+
+
+### 📦️ 构建系统
+
+* **deps:** 更新 ESLint 并调整依赖项 ([4398d4a](https://github.com/chinoyui/meme-plugin/commit/4398d4a1d8adcad02393b2329a453b289849609c))
+* **eslint:** 更新 ESLint 配置 ([49eb7dc](https://github.com/chinoyui/meme-plugin/commit/49eb7dcc63bd60c641948b7ca517182f34ac1543))
+* **lint:** 更新 ESLint 配置和依赖 ([77e176e](https://github.com/chinoyui/meme-plugin/commit/77e176e26f85eacf6a3b1c6ec0ba14baedf4406d))
+
+
+### 🎡 持续集成
+
+* **release:** 更新获取最新标签的命令 ([71afafa](https://github.com/chinoyui/meme-plugin/commit/71afafaec53a402a2f471fa2653e5eab2e3e18e9))
+
 ## [1.17.0](https://github.com/ClarityJS/meme-plugin/compare/v1.16.1...v1.17.0) (2025-04-24)
 
 
